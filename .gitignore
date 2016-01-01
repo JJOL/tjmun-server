@@ -34,3 +34,6 @@ data
 
 #tsd Documentation Sources
 typings
+
+# Config Should Not Be Revealed!!
+config.js
