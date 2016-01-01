@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to this <%= title %> Page!</p>
+    
+    
+    <form action="api/sessions/open" method="POST">
+        <input type="hidden" name="auth_key" value= <%= authKey %>>
+        <div>
+            <span>Name:</span>
+            <input type="text" name="name">
+            <br>
+        </div>
+        <div>
+            <span>Protocol:</span>
+            <input type="text" name="protocol">
+            <br>
+        </div>
+        <div>
+            <span>Estado:</span>
+            <input type="text" name="state">
+            <br>
+        </div>
+        <input type="submit" value="Create">
+    </form>
+    
+  </body>
+</html>
