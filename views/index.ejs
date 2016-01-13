@@ -6,28 +6,27 @@
   </head>
   <body>
     <h1><%= title %></h1>
-    <p>Welcome to this <%= title %> Page!</p>
-    
-    
-    <form action="api/sessions/open" method="POST">
-        <input type="hidden" name="auth_key" value= <%= authKey %>>
-        <div>
-            <span>Name:</span>
-            <input type="text" name="name">
-            <br>
+    <div id="wrapper">
+        <header><nav>
+            <ul class="horizontal">
+                <li class="item"></li>
+            </ul>
+        </nav></header>
+        <div name="updateBar" class="">
+            <div id="loginSection" class="rounded">
+                <form method="POST" action="/login">
+                    <input type="hidden" name="_csrf" value=<%= csrfToken %> />
+                    <span class="form-label">Username:</span>
+                    <input type="text" name="username" placeholder="Username" class="form-input" id="userName">
+                    <span class="form-label">Password:</span>
+                    <input type="text" name="password" placeholder="Password" class="form-input" id="password">
+                    <input type="submit" name="submit" value="Login" class="form-submit">
+                </form>
+            </div>
         </div>
-        <div>
-            <span>Protocol:</span>
-            <input type="text" name="protocol">
-            <br>
-        </div>
-        <div>
-            <span>Estado:</span>
-            <input type="text" name="state">
-            <br>
-        </div>
-        <input type="submit" value="Create">
-    </form>
-    
+        <div id="main">
+            
+        </div>    
+    </div>
   </body>
 </html>

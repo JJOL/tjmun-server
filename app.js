@@ -4,13 +4,9 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-//var mongo = require('mongodb');
 var config = require('./config.js');
-//var monk = require('monk');
+var csrf   = require('csurf');
 var url = 'localhost:27017/tjmun_api_test';
-//var url = config.database.url + config.database.dbname;
-//var db = monk('localhost:27017/nodeuserlist');
-//var db = monk(url);
 var sessions = require('client-sessions');
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/tjmundb');
@@ -33,24 +29,43 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-/*app.use(sessions({
-    cookieName: 'session',
-    secret: config.cookieSecret,
-    duration: 30 * 60* 1000,
-    activeDuration: 5 * 60 * 1000
-}));*/
-
-
-
 app.use(express.static(path.join(__dirname, 'public')));
-/*app.use(function(req, res, next) {
-   req.db = db;
-   next(); 
-});*/
 
-app.use('/api/users', users);
+
 app.use('/api/sessions', msessions);
+//
+app.use(sessions({
+    cookieName: "session",
+    secret: 'da3ear3fa3f3gf435hj65j657',
+    duration: 30 * 60 * 1000,
+    activeDuration: 5 * 60 * 1000
+}));
+app.use(csrf());
+// TOKEN CHECK
+app.use(function(err, req, res, next) {
+    if(err.code !== 'EBADCSRFTOKEN') return next();
+    res.status(403);
+    res.send("Trying to Perform A Request without valid CSRF Token!!");
+});
+
+// SESSION MANAGEMENT
+app.use(function(req, res, next) {
+   if(req.session && req.session.user) {
+       MUser.findOne({userName: req.session.user.userName}, function(err, user) {
+           if (user) {
+               req.user = user;
+               delete req.user.password;
+               req.session.user = req.user;
+               res.locals.user = req.user;         
+           }
+           next();
+       });
+   } else {
+       next();
+   }
+});
 app.use('/', routes);
+app.use('/api/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

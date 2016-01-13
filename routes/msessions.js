@@ -1,22 +1,8 @@
 var express = require('express');
+
 var config  = require('../config.js');
 var router = express.Router();
-//var mongoose = require('mongoose');
 var MUNSession = require('../models/munsession.js');
-/*
-var Schema = mongoose.Schema;
-var ObjectId = Schema.ObjectId;
-
-//mongoose.connect('mongodb://localhost:27017/tjmundb');
-var MUNSession = mongoose.model('session', new Schema({
-        id: ObjectId,
-        protocol: String,
-        committeeName: String,
-        delegates: Array,
-        state: String,
-        active: Boolean
-    })
-);*/
 
 function apiAuth (req, res, next){
     if (req.body.auth_key && req.body.auth_key === config.API_KEY) {
@@ -42,7 +28,10 @@ router.get("/", function(req, res) {
 // Get Basic Information from Session
 router.get("/:sessionid/info", function(req, res) {
     var id = req.params.sessionid;
-    MUNSession.find({_id: id}, {__v: 0}, function(err, munSession) {        
+    var basicInfoMask = {
+        _id: 1, committeeName: 1, protocol: 1, moderators: 1
+    };
+    MUNSession.find({_id: id}, basicInfoMask, function(err, munSession) {        
         if(!err) {
             cleanDBObject(munSession);
             res.json({status: 1, data: munSession});    
@@ -50,7 +39,6 @@ router.get("/:sessionid/info", function(req, res) {
             res.json({status: 0, msg: "Didn't find a session matching id!", error: err})
         }
     }); 
-    //res.json({msg: "Session("+ req.params.sessionid +") Info Done"});
 });
 
 // Create New Session
@@ -93,11 +81,70 @@ router.delete("/:sessid", apiAuth, function(req, res) {
 // Get Chronological Events of Session
 router.get("/:sessionid/events", function(req, res) {
     res.json({msg: "Chronological Session Done"});
+    // Warnings
+    // Clocks State Changes
+    // Session State Changes
+    
+    // Get All Warnigns, Clock State Changes and Session State Changes
+    // Make a map with Time Being Key and 
+    
+    /*var event = {
+        time,
+        type,
+        message,
+        data
+    }*/
+    
+    var eventsMask = {
+      _id: 1, events: 1  
+    };
+    
+    MUNSession.find({_id: req.params.sessionid}, eventsMask, function(err, events) {
+        if(!err) {
+            res.json({status: 1, data: events})
+        } else {
+            res.json({status: 0, error: err, code: 50});
+        }
+    });
 });
 
 
 router.get("/:sessionid/warnings", function(req, res) {
-    res.json({msg: "Warnings from Session Done"});
+    // Check If Input Request is Valid
+    // Go Through All The Warnigs Found In DB
+    
+    var warningsMask = {
+      _id: 1, warnings: 1
+    };
+    
+    MUNSession.find({_id: req.params.sessionid}, warningsMask, function(err, sessWarns) {
+        if(!err) {
+            res.json({status: 1, data: sessWarns[0]});
+        } else {
+            res.json({status: 0, error: err, code: 50});
+        }
+    });
+    
+});
+
+router.post("/:sessionid/warnings", apiAuth, function(req, res) {
+    
+    var fdate = ""; // Get and Transform the date in the correct way
+    
+    var newWarning = {
+        to: req.body.to,
+        date: fdate,
+        comment: req.body.comment
+    };
+    
+    // Add A Warnings Comment to the desired Session
+    MUNSession.put({_id: req.params.sessionid}, {$push: {warnings: newWarning}}, function(err, raw) {
+        if (!err) {
+            res.json({status: 1})
+        } else {
+            
+        }
+    });
 });
 
 function cleanDBObject(object) {

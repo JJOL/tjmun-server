@@ -49,3 +49,17 @@
     
 ###Side Notes
  - You usually would want a /data/ Folder to save all of your Database Storage inside it
+ 
+ 
+ 
+ 
+ 
+sessions:
+ - delegates
+ - warnigns
+ - events
+ 
+sessions:
+ - delegates:
+    - warnings
+ - events

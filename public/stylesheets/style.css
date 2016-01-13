@@ -1,3 +1,8 @@
+* {
+    padding: 0px;
+    margin: 0px;
+}
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -5,4 +10,14 @@ body {
 
 a {
   color: #00B7FF;
+}
+
+.lightPlace {
+    color: red;
+    background-color: white;
+}
+
+.darkPlace {
+    color: grey;
+    background-color: black;
 }

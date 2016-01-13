@@ -8,7 +8,23 @@ var MUNSession = mongoose.model('session', new Schema({
     state: String,
     moderators: Array,
     delegates: Array,
-    warnings: Array
+    warnings: Array,
+    events: Array
 }));
 
 module.exports = MUNSession;
+
+
+/* Warning
+{
+    from,
+    to,
+    date,
+    comment,
+}
+
+
+ * 5:00pm Session Started!
+ * 5:50pm Warning Given to 
+
+*/
